@@ -57,6 +57,7 @@ function createNewIngRow(){
 
 function QuantityInput(){
     var inputForQty = document.createElement("input");
+    inputForQty.id = "qty";
     inputForQty.type = "number";
     inputForQty.name = "qty";
     inputForQty.class = "qty";
@@ -69,6 +70,7 @@ function QuantityInput(){
 
 function UnitsDropDown() {
     var select = document.createElement("select");
+    select.id = "unit";
     select.name = "unit";
     select.class = "unit";
     select.setAttribute("required", "true");
@@ -84,6 +86,7 @@ function UnitsDropDown() {
 
 function IngredientInput() {
     var ingredientInput = document.createElement("input");
+    ingredientInput.id = "ingredient_name";
     ingredientInput.type = "text";
     ingredientInput.name = "ingredient";
     ingredientInput.class = "ingredient";
@@ -160,25 +163,21 @@ function clearInput(element){
 function calculateNutritionValue(id){
     var numOfIng = document.getElementById(id).childElementCount;
     var ingArray = [], qtyArray = [], rows = document.getElementById(id).children;
-    var ingQtyDict = {};
+    var ingDataRows = [];
 
     for(var i = 0; i < numOfIng; i++){
         var curr = rows[i];
 
-        var input = curr.getElementsByTagName("input");
-        var select = curr.getElementsByTagName("select");
+        var quantity = curr.querySelector("[id='qty']");
+        var unit = curr.querySelector("[id='unit']");
+        var ingredientName = curr.querySelector("[id='ingredient_name']");
 
+        var qtyDict = {};
+        qtyDict["ingredient"] = ingredientName.value
+        qtyDict["quantity"] = parseFloat(quantity.value)
+        qtyDict["unit"] = (unit.value).trim().toLowerCase();
 
-        ingArray.push(((input[1].value).trim()).toLowerCase());
-        console.log(input[1].value);
-        var qty = [];
-        qty.push(((input[0].value).trim()).toLowerCase());
-        qty.push(select[0].value);
-
-        qtyArray.push(qty);
-
-        ingQtyDict[ingArray[i]] = qtyArray[i];
-
+        ingDataRows.push(qtyDict);
     }
 
     var xhttp = new XMLHttpRequest();
@@ -188,25 +187,26 @@ function calculateNutritionValue(id){
             var keys = Object.keys(nutrientDict);
             var tableElement = document.createElement("table");
 
-            for(var i = 0; i < keys.length; i++){
-                var tableRow = document.createElement("tr");
-                tableElement.appendChild(tableRow);
-
-                var nutTableData = document.createElement("td");
-                var textData = document.createTextNode(keys[i]);
-                nutTableData.appendChild(textData);
-
-                var qtyTableData = document.createElement("td");
-                var qtyText = document.createTextNode(nutrientDict[keys[i]]);
-                qtyTableData.appendChild(qtyText);
-
-                tableRow.appendChild(nutTableData);
-                tableRow.appendChild(qtyTableData);
-            }
-            document.getElementById("output").appendChild(tableElement);
+            document.getElementById("output").innerHTML = nutrientDict
+            // for(var i = 0; i < keys.length; i++){
+            //     var tableRow = document.createElement("tr");
+            //     tableElement.appendChild(tableRow);
+            //
+            //     var nutTableData = document.createElement("td");
+            //     var textData = document.createTextNode(keys[i]);
+            //     nutTableData.appendChild(textData);
+            //
+            //     var qtyTableData = document.createElement("td");
+            //     var qtyText = document.createTextNode(nutrientDict[keys[i]]);
+            //     qtyTableData.appendChild(qtyText);
+            //
+            //     tableRow.appendChild(nutTableData);
+            //     tableRow.appendChild(qtyTableData);
+            // }
+            // document.getElementById("output").appendChild(tableElement);
         }
     }
     xhttp.open("POST", "/getIngs", true);
     xhttp.setRequestHeader("Content-Type", "application/json");
-    xhttp.send(JSON.stringify(ingQtyDict));
+    xhttp.send(JSON.stringify(ingDataRows));
 }

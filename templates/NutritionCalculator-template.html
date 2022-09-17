@@ -13,15 +13,15 @@
     <form id='form' autocomplete="off">
         <ul id="rows">
             <li class="ingRow">
-                <input type="number" name="qty" class="qty" step="0.25" placeholder="Quantity" required>
-                <select name="unit" class='unit' required>
+                <input id="qty" type="number" name="qty" class="qty" step="0.25" placeholder="Quantity" required>
+                <select id="unit" name="unit" class='unit' required>
                     <option value="" disabled selected>Choose unit:</option>
                     <option value="grams">Grams</option>
                     <option value="cups">Cups</option>
                     <option value="tbsp">Tbsp</option>
                     <option value="tsp">Tsp</option>
                 </select>
-                <input type="text" class="ingredient" name="ingredient" placeholder="Ingredient" required autocomplete="off">
+                <input id="ingredient_name" type="text" class="ingredient" name="ingredient" placeholder="Ingredient" required autocomplete="off">
                 <button type="button" onclick='deleteElement(this.parentElement)'>Delete</button>
             </li>
 
